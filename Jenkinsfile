@@ -24,9 +24,12 @@ pipeline {
         }
         stage('Push') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'DOCKERHUB_PASS')]) {
-                    sh "echo $DOCKERHUB_PASS | docker login -u your-dockerhub-username --password-stdin"
-                    sh 'docker push $REPO:latest'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-pass',
+                                  usernameVariable: 'DOCKERHUB_USER',
+                                  passwordVariable: 'DOCKERHUB_PASS')]) {
+    sh 'echo $DOCKERHUB_PASS | docker login -u $DOCKERHUB_USER --password-stdin'
+    sh 'docker push $REPO:latest'
+                    }
                 }
             }
         }
